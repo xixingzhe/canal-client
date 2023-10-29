@@ -69,13 +69,14 @@ public abstract class AbstractCanalClient implements CanalClient {
     @Override
     public void process() {
         while (flag) {
+            long batchId=0L;
             try {
                 connector.connect();
                 connector.subscribe(filter);
                 while (flag) {
                     Message message = connector.getWithoutAck(batchSize, timeout, unit);
                     log.info("获取消息 {}", message);
-                    long batchId = message.getId();
+                    batchId = message.getId();
                     if (message.getId() != -1 && message.getEntries().size() != 0) {
                         messageHandler.handleMessage(message);
                     }
@@ -83,6 +84,8 @@ public abstract class AbstractCanalClient implements CanalClient {
                 }
             } catch (Exception e) {
                 log.error("canal client 异常", e);
+                // 处理失败, 回滚数据
+                connector.rollback(batchId);
             } finally {
                 connector.disconnect();
             }
