@@ -4,6 +4,10 @@ import org.apache.commons.lang.time.DateUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -16,6 +20,8 @@ public class StringConvertUtil {
             "yyyy-MM-dd HH:mm", "yyyy-MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss",
             "yyyy/MM/dd HH:mm", "yyyy/MM", "yyyy.MM.dd", "yyyy.MM.dd HH:mm:ss",
             "yyyy.MM.dd HH:mm", "yyyy.MM"};
+
+    private static DateTimeFormatter  dateTimeFormatter=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public StringConvertUtil() {
     }
@@ -37,6 +43,12 @@ public class StringConvertUtil {
             return Float.parseFloat(columnValue);
         } else if (type.equals(Date.class)) {
             return parseDate(columnValue);
+        }else if(type.equals(LocalDateTime.class)){
+            return LocalDateTime.parse(columnValue,dateTimeFormatter);
+        }else if(type.equals(LocalDate.class)){
+            return LocalDate.parse(columnValue);
+        }else if(type.equals(LocalTime.class)){
+            return LocalTime.parse(columnValue);
         } else {
             return type.equals(java.sql.Date.class) ? parseSqlDate(columnValue) : columnValue;
         }
