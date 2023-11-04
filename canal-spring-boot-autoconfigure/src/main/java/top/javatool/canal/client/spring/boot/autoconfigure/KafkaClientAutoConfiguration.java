@@ -45,7 +45,7 @@ public class KafkaClientAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = CanalProperties.CANAL_ASYNC, havingValue = "true", matchIfMissing = true)
-    public MessageHandler messageHandler(RowDataHandler<List<Map<String, String>>> rowDataHandler,
+    public MessageHandler asyncMessageHandler(RowDataHandler<List<Map<String, String>>> rowDataHandler,
                                          List<EntryHandler> entryHandlers,
                                          ExecutorService executorService) {
         return new AsyncFlatMessageHandlerImpl(entryHandlers, rowDataHandler, executorService);
@@ -54,7 +54,7 @@ public class KafkaClientAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = CanalProperties.CANAL_ASYNC, havingValue = "false")
-    public MessageHandler messageHandler(RowDataHandler<List<Map<String, String>>> rowDataHandler, List<EntryHandler> entryHandlers) {
+    public MessageHandler syncMessageHandler(RowDataHandler<List<Map<String, String>>> rowDataHandler, List<EntryHandler> entryHandlers) {
         return new SyncFlatMessageHandlerImpl(entryHandlers, rowDataHandler);
     }
 
